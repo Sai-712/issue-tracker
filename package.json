@@ -1,0 +1,25 @@
+{
+  "name": "issue-tracker",
+  "version": "1.0.0",
+  "description": "A full-stack Issue Tracker application with Python FastAPI backend and Angular frontend",
+  "scripts": {
+    "install-backend": "cd backend && pip install -r requirements.txt",
+    "install-frontend": "cd frontend/issue-tracker-frontend && npm install",
+    "install-all": "npm run install-backend && npm run install-frontend",
+    "start-backend": "./start-backend.sh",
+    "start-frontend": "./start-frontend.sh",
+    "dev": "concurrently \"npm run start-backend\" \"npm run start-frontend\""
+  },
+  "keywords": [
+    "issue-tracker",
+    "fastapi",
+    "angular",
+    "typescript",
+    "python"
+  ],
+  "author": "Issue Tracker Team",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

@@ -1,0 +1,68 @@
+<div class="issue-detail-container">
+  <div class="header">
+    <h2 mat-dialog-title>Issue Details</h2>
+    <button mat-icon-button (click)="onClose()" class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  
+  <mat-dialog-content class="content">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{ issue.title }}</mat-card-title>
+        <mat-card-subtitle>Issue #{{ issue.id }}</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content>
+        <div class="issue-info">
+          <div class="info-row">
+            <span class="label">Status:</span>
+            <mat-chip [color]="getStatusColor(issue.status)" selected>
+              {{ issue.status | titlecase }}
+            </mat-chip>
+          </div>
+          
+          <div class="info-row">
+            <span class="label">Priority:</span>
+            <mat-chip [color]="getPriorityColor(issue.priority)" selected>
+              {{ issue.priority | titlecase }}
+            </mat-chip>
+          </div>
+          
+          <div class="info-row">
+            <span class="label">Assignee:</span>
+            <span class="value">{{ issue.assignee || 'Unassigned' }}</span>
+          </div>
+          
+          <div class="info-row">
+            <span class="label">Created:</span>
+            <span class="value">{{ formatDate(issue.created_at) }}</span>
+          </div>
+          
+          <div class="info-row">
+            <span class="label">Updated:</span>
+            <span class="value">{{ formatDate(issue.updated_at) }}</span>
+          </div>
+          
+          <mat-divider></mat-divider>
+          
+          <div class="description-section">
+            <h3>Description</h3>
+            <p class="description">{{ issue.description || 'No description provided' }}</p>
+          </div>
+          
+          <mat-divider></mat-divider>
+          
+          <div class="json-section">
+            <h3>Raw JSON Data</h3>
+            <pre class="json-display">{{ getIssueJson() }}</pre>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions align="end">
+    <button mat-button (click)="onClose()">Close</button>
+  </mat-dialog-actions>
+</div>

@@ -1,0 +1,155 @@
+<div class="issue-list-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Issue Tracker</mat-card-title>
+      <mat-card-subtitle>Manage and track your issues</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <!-- Filters and Search -->
+      <div class="filters-section">
+        <div class="search-row">
+          <mat-form-field appearance="outline" class="search-field">
+            <mat-label>Search issues</mat-label>
+            <input matInput [(ngModel)]="searchTerm" (keyup.enter)="onSearch()" placeholder="Search by title...">
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
+          <button mat-raised-button color="primary" (click)="onSearch()">
+            <mat-icon>search</mat-icon>
+            Search
+          </button>
+        </div>
+        
+        <div class="filter-row">
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Status</mat-label>
+            <mat-select [(ngModel)]="statusFilter" (selectionChange)="onFilterChange()">
+              <mat-option value="">All Statuses</mat-option>
+              <mat-option *ngFor="let status of statusOptions" [value]="status">
+                {{ status | titlecase }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Priority</mat-label>
+            <mat-select [(ngModel)]="priorityFilter" (selectionChange)="onFilterChange()">
+              <mat-option value="">All Priorities</mat-option>
+              <mat-option *ngFor="let priority of priorityOptions" [value]="priority">
+                {{ priority | titlecase }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Assignee</mat-label>
+            <input matInput [(ngModel)]="assigneeFilter" (keyup.enter)="onFilterChange()" placeholder="Filter by assignee...">
+          </mat-form-field>
+        </div>
+      </div>
+      
+      <!-- Action Buttons -->
+      <div class="actions-section">
+        <button mat-raised-button color="primary" (click)="openCreateDialog()">
+          <mat-icon>add</mat-icon>
+          Create Issue
+        </button>
+      </div>
+      
+      <!-- Issues Table -->
+      <div class="table-container">
+        <table mat-table [dataSource]="issues" matSort (matSortChange)="onSortChange($event)" class="issues-table">
+          
+          <!-- ID Column -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="id">ID</th>
+            <td mat-cell *matCellDef="let issue">{{ issue.id }}</td>
+          </ng-container>
+          
+          <!-- Title Column -->
+          <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="title">Title</th>
+            <td mat-cell *matCellDef="let issue" class="title-cell" (click)="openDetailDialog(issue)">
+              {{ issue.title }}
+            </td>
+          </ng-container>
+          
+          <!-- Status Column -->
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="status">Status</th>
+            <td mat-cell *matCellDef="let issue">
+              <mat-chip [color]="getStatusColor(issue.status)" selected>
+                {{ issue.status | titlecase }}
+              </mat-chip>
+            </td>
+          </ng-container>
+          
+          <!-- Priority Column -->
+          <ng-container matColumnDef="priority">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="priority">Priority</th>
+            <td mat-cell *matCellDef="let issue">
+              <mat-chip [color]="getPriorityColor(issue.priority)" selected>
+                {{ issue.priority | titlecase }}
+              </mat-chip>
+            </td>
+          </ng-container>
+          
+          <!-- Assignee Column -->
+          <ng-container matColumnDef="assignee">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="assignee">Assignee</th>
+            <td mat-cell *matCellDef="let issue" (click)="openDetailDialog(issue)">
+              {{ issue.assignee || 'Unassigned' }}
+            </td>
+          </ng-container>
+          
+          <!-- Updated At Column -->
+          <ng-container matColumnDef="updated_at">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header="updated_at">Updated</th>
+            <td mat-cell *matCellDef="let issue" (click)="openDetailDialog(issue)">
+              {{ formatDate(issue.updated_at) }}
+            </td>
+          </ng-container>
+          
+          <!-- Actions Column -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Actions</th>
+            <td mat-cell *matCellDef="let issue">
+              <button mat-icon-button (click)="openEditDialog(issue)" title="Edit Issue">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+          
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" 
+              class="issue-row" 
+              (click)="openDetailDialog(row)"
+              [class.clickable]="true"></tr>
+        </table>
+        
+        <!-- Loading indicator -->
+        <div *ngIf="loading" class="loading-container">
+          <mat-spinner diameter="50"></mat-spinner>
+          <p>Loading issues...</p>
+        </div>
+        
+        <!-- No data message -->
+        <div *ngIf="!loading && issues.length === 0" class="no-data-container">
+          <mat-icon>inbox</mat-icon>
+          <p>No issues found</p>
+        </div>
+      </div>
+      
+      <!-- Pagination -->
+      <mat-paginator
+        [length]="totalItems"
+        [pageSize]="pageSize"
+        [pageIndex]="pageIndex"
+        [pageSizeOptions]="pageSizeOptions"
+        [showFirstLastButtons]="true"
+        (page)="onPageChange($event)"
+        class="paginator">
+      </mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

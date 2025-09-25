@@ -1,0 +1,74 @@
+<div class="issue-form-container">
+  <div class="header">
+    <h2 mat-dialog-title>{{ isEditMode ? 'Edit Issue' : 'Create New Issue' }}</h2>
+    <button mat-icon-button (click)="onCancel()" class="close-button">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  
+  <mat-dialog-content class="content">
+    <form [formGroup]="issueForm" (ngSubmit)="onSubmit()">
+      <mat-card>
+        <mat-card-content>
+          <div class="form-fields">
+            <!-- Title Field -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Title *</mat-label>
+              <input matInput formControlName="title" placeholder="Enter issue title">
+              <mat-error *ngIf="getFieldError('title')">{{ getFieldError('title') }}</mat-error>
+            </mat-form-field>
+            
+            <!-- Description Field -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Description</mat-label>
+              <textarea matInput formControlName="description" rows="4" placeholder="Enter issue description"></textarea>
+            </mat-form-field>
+            
+            <!-- Status and Priority Row -->
+            <div class="form-row">
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Status *</mat-label>
+                <mat-select formControlName="status">
+                  <mat-option *ngFor="let status of statusOptions" [value]="status">
+                    {{ status | titlecase }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="getFieldError('status')">{{ getFieldError('status') }}</mat-error>
+              </mat-form-field>
+              
+              <mat-form-field appearance="outline" class="half-width">
+                <mat-label>Priority *</mat-label>
+                <mat-select formControlName="priority">
+                  <mat-option *ngFor="let priority of priorityOptions" [value]="priority">
+                    {{ priority | titlecase }}
+                  </mat-option>
+                </mat-select>
+                <mat-error *ngIf="getFieldError('priority')">{{ getFieldError('priority') }}</mat-error>
+              </mat-form-field>
+            </div>
+            
+            <!-- Assignee Field -->
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Assignee</mat-label>
+              <input matInput formControlName="assignee" placeholder="Enter assignee name">
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </form>
+  </mat-dialog-content>
+  
+  <mat-dialog-actions align="end" class="actions">
+    <button mat-button (click)="onCancel()" [disabled]="loading">
+      Cancel
+    </button>
+    <button mat-raised-button 
+            color="primary" 
+            (click)="onSubmit()" 
+            [disabled]="issueForm.invalid || loading">
+      <mat-icon *ngIf="loading">hourglass_empty</mat-icon>
+      <mat-icon *ngIf="!loading">{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+      {{ loading ? 'Saving...' : (isEditMode ? 'Update Issue' : 'Create Issue') }}
+    </button>
+  </mat-dialog-actions>
+</div>
